@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.iflytek.sybil.smarthome">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/icon"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".activity.MainActivity"></activity>
+        <service android:name=".utils.BluetoothService" />
+        <activity android:name=".ControlActivity"></activity>
+        <activity android:name=".activity.FirstActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.AddActivity"></activity>
+        <activity android:name=".activity.DeletActivity"></activity>
+        <activity android:name=".activity.SevenFourClipActivity"></activity>
+        <activity android:name=".activity.MacScanActivity"></activity>
+        <activity android:name=".ShowActivity"></activity>
+
+
+        <!-- 在这里定义共享信息 -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.fileproviderdemo.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
+    </application>
+
+
+</manifest>
