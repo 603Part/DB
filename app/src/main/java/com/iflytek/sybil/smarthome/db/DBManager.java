@@ -146,12 +146,44 @@ public class DBManager {
         return stringBuilder.toString();
     }
 
+    public static boolean remove(int three_id) {
+        manager.beginTransaction();
+        boolean b = false;
+        try {
+            manager.execSQL("DELETE FROM three WHERE three_id =" + three_id);
+            manager.setTransactionSuccessful();
+            b = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            b = false;
+        } finally {
+            manager.endTransaction();
+            return b;
+        }
+    }
+
     public static boolean remove(int two_id,int parent_id) {
         manager.beginTransaction();
         boolean b = false;
         try {
             manager.execSQL("DELETE FROM three WHERE two_id =" + two_id);
-            manager.execSQL("DELETE FROM two WHERE parent_id =" + parent_id);
+            manager.execSQL("DELETE FROM two WHERE parent_id = '"+parent_id+"' AND id = '"+two_id+"'");
+//            manager.execSQL("DELETE FROM one WHERE id =" + parent_id);
+            manager.setTransactionSuccessful();
+            b = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            b = false;
+        } finally {
+            manager.endTransaction();
+            return b;
+        }
+    }
+
+    public static boolean removeOne(int parent_id) {
+        manager.beginTransaction();
+        boolean b = false;
+        try {
             manager.execSQL("DELETE FROM one WHERE id =" + parent_id);
             manager.setTransactionSuccessful();
             b = true;

@@ -32,10 +32,13 @@ public class DeletActivity extends TitleActivity {
 
     private int parentID = 0;
     private int twoID = 0;
+    private int threeID = 0;
 
     private List<String> queryOne;
     private List<String> queryTwo;
     private List<String> queryThree;
+
+    private boolean isTwoArrayEmpty,isThreeArrayEmpty = false;
 
     private TextView Delettv_position = null;
 
@@ -77,7 +80,7 @@ public class DeletActivity extends TitleActivity {
 
         parentID = Integer.parseInt(queryOne.get(3).split(",")[0]);
         queryTwo = DBManager.queryTwoList(parentID);
-
+        queryThree = DBManager.queryThreeList(Integer.parseInt(queryTwo.get(0).split(",")[0]));
         DeletsecondAdapter = new ArrayAdapter<String>(DeletActivity.this,
                 android.R.layout.simple_spinner_item,queryTwoListParse(queryTwo));
         DeletsecondSpinner.setAdapter(DeletsecondAdapter);
@@ -85,7 +88,7 @@ public class DeletActivity extends TitleActivity {
 
         twoID = Integer.parseInt(queryTwo.get(0).split(",")[0]);
         List<String> strings = DBManager.queryThreeList(twoID);
-
+        threeID = Integer.parseInt(queryThree.get(0).split(",")[0]);
         DeletthirdAdapter = new ArrayAdapter<String>(DeletActivity.this,
                 android.R.layout.simple_spinner_item, queryThreeListParseSimple(strings));
         DeletthridSpinner.setAdapter(DeletthirdAdapter);
@@ -98,9 +101,14 @@ public class DeletActivity extends TitleActivity {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 //position为当前省级选中的值的序号
+                isTwoArrayEmpty = false;
                 parentID = Integer.parseInt(queryOne.get(position).split(",")[0]);
                 queryTwo = DBManager.queryTwoList(parentID);
+
                 List<String> twoParseList = queryTwoListParse(queryTwo);
+                if (twoParseList.size() == 1) {
+                    isTwoArrayEmpty = true;
+                }
                 //将地级适配器的值改变为city[position]中的值
                 DeletsecondAdapter = new ArrayAdapter<String>(
                         DeletActivity.this, android.R.layout.simple_spinner_item, twoParseList);
@@ -124,8 +132,12 @@ public class DeletActivity extends TitleActivity {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int position, long arg3) {
+                isThreeArrayEmpty = false;
                 twoID = Integer.parseInt(queryTwo.get(position).split(",")[0]);
                 queryThree = DBManager.queryThreeList(twoID);
+                if (queryThree.size() == 1) {
+                    isThreeArrayEmpty = true;
+                }
                 List<String> queryThreeListParseSimple = queryThreeListParseSimple(queryThree);
                 DeletthirdAdapter = new ArrayAdapter<String>(DeletActivity.this,
                         android.R.layout.simple_spinner_item, queryThreeListParseSimple);
@@ -146,6 +158,7 @@ public class DeletActivity extends TitleActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 List<ThreeBean> threeBeans = queryThreeListParse(queryThree);
+                threeID = threeBeans.get(position).getThree_id();
                 ThreeBean threeBean = threeBeans.get(position);
 //                findPosition(threeBean);
 //                third = position;
@@ -324,8 +337,15 @@ public class DeletActivity extends TitleActivity {
         switch (v.getId()) {
             case R.id.delet_sqrt:
                 try {
-                    DBManager.remove(twoID,parentID);
-                    DataActivity.Delet(Deletfirst,Deletsecond,Deletthird);
+                    DBManager.remove(threeID);
+                    if (isThreeArrayEmpty) {
+                        DBManager.remove(twoID,parentID);
+                        if (isTwoArrayEmpty) {
+                            DBManager.removeOne(parentID);
+                        }
+                    }
+
+//                    DataActivity.Delet(Deletfirst,Deletsecond,Deletthird);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
